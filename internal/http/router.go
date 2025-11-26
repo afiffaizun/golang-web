@@ -1,0 +1,13 @@
+package http
+
+import (
+	stdhttp "net/http"
+
+	"github.com/afiffaizun/golang-web/internal/http/handler"
+)
+
+func NewRouter() *stdhttp.ServerMux {
+	mux := stdhttp.NewServerMux()
+	mux.HandleFunc("/health", handler.Health)
+	return mux
+}
