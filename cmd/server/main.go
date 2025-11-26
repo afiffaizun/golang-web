@@ -2,16 +2,16 @@ package main
 
 import (
 	"log"
-	"net/http"
+	stdhttp "net/http"
 
-	"github.com/afiffaizun/golang-web/internal/http"
+	apphttp "github.com/afiffaizun/golang-web/internal/http"
 )
 
 func main() {
-	router := http.NewRouter()
+	router := apphttp.NewRouter()
 
-	log.Println("server running on :8080")
-	if err := http.ListenAndServe(":8080", router); err != nil {
+	log.Println("server running on :8081")
+	if err := stdhttp.ListenAndServe(":8081", router); err != nil {
 		log.Fatalf("failed to start server:  %v", err)
 	}
 
