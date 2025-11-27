@@ -9,5 +9,7 @@ import (
 func NewRouter() *stdhttp.ServeMux {
 	mux := stdhttp.NewServeMux()
 	mux.HandleFunc("/health", handler.Health)
+	mux.HandleFunc("/materials", handler.ListMaterials)
+	mux.HandleFunc("/materials", handler.GetMaterialDetail)
 	return mux
 }
