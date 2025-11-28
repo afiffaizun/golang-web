@@ -17,3 +17,14 @@ func ListMaterials(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(memory.GetAllMaterials())
 }
+
+func MaterialsEntryPoint(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		ListMaterials(w, r)
+	case http.MethodPost:
+		CreateMaterial(w, r)
+	default:
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+	}
+}
