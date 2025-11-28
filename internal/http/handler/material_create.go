@@ -10,7 +10,7 @@ import (
 )
 
 type createMaterialRequest struct {
-	Title string `json:"title"`
+	Title   string `json:"title"`
 	Summary string `json:"summary"`
 }
 
@@ -21,14 +21,23 @@ func CreateMaterial(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req createMaterialRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "invalid body", http.StatusBadRequest)
-		return
+	if isFormRequest(r) {
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, "invalid form data", http.StatusBadRequest)
+			return
+		}
+		req.Title = r.FormValue("title")
+		req.Summary = r.FormValue("summary")
+	} else {
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, "invalid body", http.StatusBadRequest)
+			return
+		}
 	}
 
 	req.Title = strings.TrimSpace(req.Title)
 	if len(req.Title) < 3 {
-		http.Error(w, "title must be at least 3 characters",http.StatusBadRequest)
+		http.Error(w, "title must be at least 3 characters", http.StatusBadRequest)
 		return
 	}
 
@@ -38,6 +47,11 @@ func CreateMaterial(w http.ResponseWriter, r *http.Request) {
 	}
 
 	created := memory.AddMaterial(newMat)
+
+	if isFormRequest(r) {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)

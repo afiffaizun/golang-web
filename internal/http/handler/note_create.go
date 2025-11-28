@@ -40,9 +40,17 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req createNoteRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "invalid body", http.StatusBadRequest)
-		return
+	if isFormRequest(r) {
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, "invalid form data", http.StatusBadRequest)
+			return
+		}
+		req.Content = r.FormValue("content")
+	} else {
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, "invalid body", http.StatusBadRequest)
+			return
+		}
 	}
 
 	req.Content = strings.TrimSpace(req.Content)
@@ -57,6 +65,11 @@ func CreateNote(w http.ResponseWriter, r *http.Request) {
 	}
 
 	created := memory.AddNote(newNote)
+
+	if isFormRequest(r) {
+		http.Redirect(w, r, "/materials/"+strconv.Itoa(materialID), http.StatusSeeOther)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)

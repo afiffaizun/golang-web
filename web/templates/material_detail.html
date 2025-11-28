@@ -1,0 +1,33 @@
+{{define "title"}}Detail Materi{{end}}
+
+{{template "layout" .}}
+
+{{define "content"}}
+<section>
+  <a href="/">← Kembali</a>
+  <h2>{{.Material.Title}}</h2>
+  <p>{{.Material.Summary}}</p>
+</section>
+
+<section class="notes">
+  <h3>Catatan</h3>
+  <ul>
+    {{range .Notes}}
+      <li>{{.Content}}</li>
+    {{else}}
+      <li>Belum ada catatan.</li>
+    {{end}}
+  </ul>
+</section>
+
+<section class="form-section">
+  <h3>Tambah Catatan</h3>
+  <form method="POST" action="/materials/{{.Material.ID}}/notes">
+    <label>
+      Catatan
+      <textarea name="content" rows="4" required></textarea>
+    </label>
+    <button type="submit">Simpan</button>
+  </form>
+</section>
+{{end}}

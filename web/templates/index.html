@@ -1,0 +1,34 @@
+{{define "title"}}Daftar Materi{{end}}
+
+{{template "layout" .}}
+
+{{define "content"}}
+<section class="materials-list">
+  <h2>Materi</h2>
+  <ul>
+    {{range .Materials}}
+      <li>
+        <a href="/materials/{{.ID}}">{{.Title}}</a>
+        <p>{{.Summary}}</p>
+      </li>
+    {{else}}
+      <li>Belum ada materi.</li>
+    {{end}}
+  </ul>
+</section>
+
+<section class="form-section">
+  <h3>Tambah Materi</h3>
+  <form method="POST" action="/materials">
+    <label>
+      Judul
+      <input type="text" name="title" required minlength="3">
+    </label>
+    <label>
+      Ringkasan
+      <textarea name="summary" rows="3"></textarea>
+    </label>
+    <button type="submit">Simpan</button>
+  </form>
+</section>
+{{end}}
